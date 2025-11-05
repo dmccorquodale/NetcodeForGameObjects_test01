@@ -128,7 +128,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2007447937762849128}
   - component: {fileID: 9001440815551667523}
-  - component: {fileID: 2390843291192763570}
   - component: {fileID: 6380310339636681302}
   m_Layer: 0
   m_Name: Camera
@@ -136,7 +135,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2007447937762849128
 Transform:
   m_ObjectHideFlags: 0
@@ -203,14 +202,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &2390843291192763570
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1374583995073405558}
-  m_Enabled: 1
 --- !u!114 &6380310339636681302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,8 +344,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2261649947228124122}
+  - component: {fileID: 8230657745394172719}
   - component: {fileID: 623752720848793854}
   - component: {fileID: 7173251393307970248}
+  - component: {fileID: 2765305575727396352}
   m_Layer: 0
   m_Name: FPSCharacter
   m_TagString: Untagged
@@ -379,6 +372,31 @@ Transform:
   - {fileID: 1914678918041421764}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8230657745394172719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5549969076977161003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 2743958716
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!143 &623752720848793854
 CharacterController:
   m_ObjectHideFlags: 0
@@ -416,6 +434,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3448421f3a1df3b49b89eb34b83ce0a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FPSCharController
+  ShowTopMostFoldoutHeaderGroup: 1
   playerCamera: {fileID: 9001440815551667523}
   walkSpeed: 6
   jumpPower: 7
@@ -423,6 +442,21 @@ MonoBehaviour:
   lookSpeed: 2
   lookXLimit: 45
   moveValue: {x: 0, y: 0}
+  rendererColourToChange: {fileID: 6344368646157152905}
+--- !u!114 &2765305575727396352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5549969076977161003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17fe81f13ed2f1b4ca9e428606161491, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RpcTest
+  ShowTopMostFoldoutHeaderGroup: 1
+  myrenderer: {fileID: 6344368646157152905}
 --- !u!1 &5653880983431017624
 GameObject:
   m_ObjectHideFlags: 0

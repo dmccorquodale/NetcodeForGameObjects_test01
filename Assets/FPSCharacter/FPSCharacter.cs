@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
+using Unity.Netcode;
 
-public class FPSCharController : MonoBehaviour
+public class FPSCharacter : NetworkBehaviour
 {
     private CharacterController characterController;
 
@@ -21,10 +22,15 @@ public class FPSCharController : MonoBehaviour
     public Vector2 moveValue;
     Vector3 moveDirection = Vector3.zero;
     float rotationX = 0;
+    public Renderer rendererColourToChange;
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
+        if (!IsServer)
+        {
+            rendererColourToChange.material.color = new Color(0f, 0.66f, 1f, 1f);
+        }
 
         characterController = GetComponent<CharacterController>();
 
@@ -35,10 +41,14 @@ public class FPSCharController : MonoBehaviour
 
     void Update ()
     {
-        MoveCharacter();
+        if (IsOwner)
+        {
+            //Debug.Log(NetworkObjectId);
+            Move();
+        }
     }
 
-    void MoveCharacter()
+    public void Move()
     {
         moveValue = moveAction.ReadValue<Vector2>();
         
