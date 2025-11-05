@@ -18,15 +18,16 @@ public class GameManager : NetworkBehaviour
         }
     }/*
 
-    public void ChangeColor(Renderer myRenderer, Color myColor)
+    public override void OnNetworkSpawn()
     {
-        ChangeColorRpc(myRenderer, myColor);
-        
-    }
+        Debug.Log("My GameManager Spawned - time to sync colours");
 
+        SendMeYourColour();
+    }
+    
     [Rpc(SendTo.ClientsAndHost)]
-    void ChangeColorRpc(Renderer myRenderer, Color myColor)
+    void SendMeYourColour()
     {
-        myRenderer.material.color = myColor;
+
     }*/
 }

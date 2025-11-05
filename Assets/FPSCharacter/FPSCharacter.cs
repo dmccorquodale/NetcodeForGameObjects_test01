@@ -21,7 +21,9 @@ public class FPSCharacter : NetworkBehaviour
     public Vector2 moveValue;
     Vector3 moveDirection = Vector3.zero;
     float rotationX = 0;
+
     public Renderer rendererColourToChange;
+    public NetworkVariable<Color> PlayerColor = new NetworkVariable<Color>();
 
     void Start()
     {
@@ -29,16 +31,43 @@ public class FPSCharacter : NetworkBehaviour
         {
             return;
         }
-        
+
         //Cursor.lockState = CursorLockMode.Locked;
 
-        PickMyColor();
-        
+
         characterController = GetComponent<CharacterController>();
 
         moveAction = InputSystem.actions.FindAction("Player/Move");
         lookAction = InputSystem.actions.FindAction("Player/Look");
         jumpAction = InputSystem.actions.FindAction("Player/Jump");
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        PlayerColor.Value = PickMyColor();
+
+        // Apply current color when object spawns locally
+        rendererColourToChange.material.color = PlayerColor.Value;
+
+        // Listen for color changes
+        PlayerColor.OnValueChanged += OnColorChanged;
+    }
+
+    public override void OnDestroy()
+    {
+        PlayerColor.OnValueChanged -= OnColorChanged;
+    }
+
+    private void OnColorChanged(Color oldValue, Color newValue)
+    {
+        rendererColourToChange.material.color = newValue;
+    }
+    
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void SetColorServerRpc(Color newColor)
+    {
+        // Only the server updates the NetworkVariable
+        PlayerColor.Value = newColor;
     }
 
     void Update()
@@ -53,15 +82,13 @@ public class FPSCharacter : NetworkBehaviour
 
         if (jumpAction.WasPressedThisFrame()) { OnJump(); }
     }
-
-    void PickMyColor()
+    
+    Color PickMyColor()
     {
         Color myColour = Color.green; // Don't think we should ever see a green duck
 
         if (IsOwner && !IsHost) // I am the client, not the host
         {
-            //rendererColourToChange.material.color = new Color(0f, 0.66f, 1f, 1f);
-            //GameManager.Instance.ChangeColor(rendererColourToChange, new Color(0f, 0.66f, 1f, 1f));
             myColour = new Color(0f, 0.66f, 1f, 1f);
         }
         else // I am the host
@@ -69,32 +96,24 @@ public class FPSCharacter : NetworkBehaviour
             myColour = new Color(1f, 0f, 0f, 1f);
         }
 
-        MyColorRpc(NetworkObjectId, myColour);
+        //MyColorRpc(NetworkObjectId, myColour);
+        return myColour;
     }
-
+    
+    /*
     [Rpc(SendTo.ClientsAndHost)]
     void MyColorRpc(ulong myNetworkObjectId, Color mycolour)
-    {/*
-        Debug.Log("My ID is " + NetworkObjectId);
-        Debug.Log("I was passed this " + myNetworkObjectId);
-        FPSCharacter[] scripts = FindObjectsByType<FPSCharacter>(FindObjectsSortMode.None);
-
-        foreach (var script in scripts)
-        {
-            if (myNetworkObjectId == NetworkObjectId)
-            {
-                script.rendererColourToChange.material.color = mycolour;
-            }
-        }*/
-
+    {
         rendererColourToChange.material.color = mycolour;
     }
+    */
     
     void OnJump()
     {
         Color randomColor = Random.ColorHSV();
 
-        MyColorRpc(NetworkObjectId, randomColor);
+        //MyColorRpc(NetworkObjectId, randomColor);
+        PlayerColor.Value = randomColor;
     }
 
     public void Move()
