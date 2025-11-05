@@ -26,7 +26,7 @@ public class RpcTest : NetworkBehaviour
         //Debug.Log($"Client Received the RPC #{value} on NetworkObject #{sourceNetworkObjectId}");
         if (IsOwner) //Only send an RPC to the owner of the NetworkObject
         {
-            Debug.Log("I am the owner of this object and my color is " + myrenderer.material.color + " and networkID is " + NetworkObjectId);
+            //Debug.Log("I am the owner of this object and my color is " + myrenderer.material.color + " and networkID is " + NetworkObjectId);
             //ServerOnlyRpc(value + 1, sourceNetworkObjectId);
         }
     }

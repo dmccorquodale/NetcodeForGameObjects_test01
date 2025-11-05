@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System;
 using Unity.Netcode;
 
 public class FPSCharacter : NetworkBehaviour
@@ -26,12 +25,15 @@ public class FPSCharacter : NetworkBehaviour
 
     void Start()
     {
-        //Cursor.lockState = CursorLockMode.Locked;
-        if (!IsServer)
+        if (!IsOwner)
         {
-            rendererColourToChange.material.color = new Color(0f, 0.66f, 1f, 1f);
+            return;
         }
+        
+        //Cursor.lockState = CursorLockMode.Locked;
 
+        PickMyColor();
+        
         characterController = GetComponent<CharacterController>();
 
         moveAction = InputSystem.actions.FindAction("Player/Move");
@@ -39,13 +41,60 @@ public class FPSCharacter : NetworkBehaviour
         jumpAction = InputSystem.actions.FindAction("Player/Jump");
     }
 
-    void Update ()
+    void Update()
     {
-        if (IsOwner)
+        if (!IsOwner)
         {
-            //Debug.Log(NetworkObjectId);
-            Move();
+            return;
         }
+
+        //Debug.Log(NetworkObjectId);
+        Move();
+
+        if (jumpAction.WasPressedThisFrame()) { OnJump(); }
+    }
+
+    void PickMyColor()
+    {
+        Color myColour = Color.green; // Don't think we should ever see a green duck
+
+        if (IsOwner && !IsHost) // I am the client, not the host
+        {
+            //rendererColourToChange.material.color = new Color(0f, 0.66f, 1f, 1f);
+            //GameManager.Instance.ChangeColor(rendererColourToChange, new Color(0f, 0.66f, 1f, 1f));
+            myColour = new Color(0f, 0.66f, 1f, 1f);
+        }
+        else // I am the host
+        {
+            myColour = new Color(1f, 0f, 0f, 1f);
+        }
+
+        MyColorRpc(NetworkObjectId, myColour);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void MyColorRpc(ulong myNetworkObjectId, Color mycolour)
+    {/*
+        Debug.Log("My ID is " + NetworkObjectId);
+        Debug.Log("I was passed this " + myNetworkObjectId);
+        FPSCharacter[] scripts = FindObjectsByType<FPSCharacter>(FindObjectsSortMode.None);
+
+        foreach (var script in scripts)
+        {
+            if (myNetworkObjectId == NetworkObjectId)
+            {
+                script.rendererColourToChange.material.color = mycolour;
+            }
+        }*/
+
+        rendererColourToChange.material.color = mycolour;
+    }
+    
+    void OnJump()
+    {
+        Color randomColor = Random.ColorHSV();
+
+        MyColorRpc(NetworkObjectId, randomColor);
     }
 
     public void Move()
