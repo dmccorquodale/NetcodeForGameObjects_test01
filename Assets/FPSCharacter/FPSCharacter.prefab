@@ -348,6 +348,7 @@ GameObject:
   - component: {fileID: 623752720848793854}
   - component: {fileID: 7173251393307970248}
   - component: {fileID: 2765305575727396352}
+  - component: {fileID: 1681086523912091748}
   m_Layer: 0
   m_Name: FPSCharacter
   m_TagString: Untagged
@@ -442,9 +443,6 @@ MonoBehaviour:
   lookSpeed: 2
   lookXLimit: 45
   moveValue: {x: 0, y: 0}
-  rendererColourToChange: {fileID: 6344368646157152905}
-  PlayerColor:
-    m_InternalValue: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &2765305575727396352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -459,6 +457,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RpcTest
   ShowTopMostFoldoutHeaderGroup: 1
   myrenderer: {fileID: 6344368646157152905}
+--- !u!114 &1681086523912091748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5549969076977161003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbc86d0614c0c047891ad619a9511ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharColourPicker
+  ShowTopMostFoldoutHeaderGroup: 1
+  DuckColor:
+    m_InternalValue: {r: 0, g: 0, b: 0, a: 0}
+  myRenderer: {fileID: 6344368646157152905}
 --- !u!1 &5653880983431017624
 GameObject:
   m_ObjectHideFlags: 0

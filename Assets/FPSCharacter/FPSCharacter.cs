@@ -20,7 +20,7 @@ public class FPSCharacter : NetworkBehaviour
 
     public Vector2 moveValue;
     Vector3 moveDirection = Vector3.zero;
-    float rotationX = 0;    
+    float rotationX = 0;
 
     void Start()
     {
@@ -38,33 +38,6 @@ public class FPSCharacter : NetworkBehaviour
         jumpAction = InputSystem.actions.FindAction("Player/Jump");
     }
 
-    public override void OnNetworkSpawn()
-    {
-        // Listen for color changes
-        PlayerColor.OnValueChanged += OnColorChanged;
-
-        PlayerColor.Value = PickMyColor();
-        // Apply current color when object spawns locally
-        rendererColourToChange.material.color = PlayerColor.Value;
-    }
-
-    public override void OnDestroy()
-    {
-        PlayerColor.OnValueChanged -= OnColorChanged;
-    }
-
-    private void OnColorChanged(Color oldValue, Color newValue)
-    {
-        rendererColourToChange.material.color = newValue;
-    }
-    
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void SetColorServerRpc(Color newColor)
-    {
-        // Only the server updates the NetworkVariable
-        PlayerColor.Value = newColor;
-    }
-
     void Update()
     {
         if (!IsOwner)
@@ -74,41 +47,6 @@ public class FPSCharacter : NetworkBehaviour
 
         //Debug.Log(NetworkObjectId);
         Move();
-
-        if (jumpAction.WasPressedThisFrame()) { OnJump(); }
-    }
-    
-    Color PickMyColor()
-    {
-        Color myColour = Color.green; // Don't think we should ever see a green duck
-
-        if (IsOwner && !IsHost) // I am the client, not the host
-        {
-            myColour = new Color(0f, 0.66f, 1f, 1f);
-        }
-        else // I am the host
-        {
-            myColour = new Color(1f, 0f, 0f, 1f);
-        }
-
-        //MyColorRpc(NetworkObjectId, myColour);
-        return myColour;
-    }
-    
-    /*
-    [Rpc(SendTo.ClientsAndHost)]
-    void MyColorRpc(ulong myNetworkObjectId, Color mycolour)
-    {
-        rendererColourToChange.material.color = mycolour;
-    }
-    */
-    
-    void OnJump()
-    {
-        Color randomColor = Random.ColorHSV();
-
-        //MyColorRpc(NetworkObjectId, randomColor);
-        PlayerColor.Value = randomColor;
     }
 
     public void Move()
