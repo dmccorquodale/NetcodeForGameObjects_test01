@@ -20,10 +20,7 @@ public class FPSCharacter : NetworkBehaviour
 
     public Vector2 moveValue;
     Vector3 moveDirection = Vector3.zero;
-    float rotationX = 0;
-
-    public Renderer rendererColourToChange;
-    public NetworkVariable<Color> PlayerColor = new NetworkVariable<Color>();
+    float rotationX = 0;    
 
     void Start()
     {
@@ -34,7 +31,6 @@ public class FPSCharacter : NetworkBehaviour
 
         //Cursor.lockState = CursorLockMode.Locked;
 
-
         characterController = GetComponent<CharacterController>();
 
         moveAction = InputSystem.actions.FindAction("Player/Move");
@@ -44,13 +40,12 @@ public class FPSCharacter : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        PlayerColor.Value = PickMyColor();
-
-        // Apply current color when object spawns locally
-        rendererColourToChange.material.color = PlayerColor.Value;
-
         // Listen for color changes
         PlayerColor.OnValueChanged += OnColorChanged;
+
+        PlayerColor.Value = PickMyColor();
+        // Apply current color when object spawns locally
+        rendererColourToChange.material.color = PlayerColor.Value;
     }
 
     public override void OnDestroy()
