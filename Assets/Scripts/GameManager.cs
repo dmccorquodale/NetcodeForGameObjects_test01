@@ -5,6 +5,22 @@ public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    //public int hostScore;
+    public int clientScore;
+
+    public NetworkVariable<int> hostScore = new NetworkVariable<int>(default,
+        NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    private void OnEnable()
+    {
+        Goal.GoalScored += GoalScored;
+    }
+
+    private void OnDisable()
+    {
+        Goal.GoalScored -= GoalScored;
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -16,18 +32,14 @@ public class GameManager : NetworkBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-    }/*
-
-    public override void OnNetworkSpawn()
-    {
-        Debug.Log("My GameManager Spawned - time to sync colours");
-
-        SendMeYourColour();
     }
-    
-    [Rpc(SendTo.ClientsAndHost)]
-    void SendMeYourColour()
-    {
 
-    }*/
+    void GoalScored()
+    {
+        if (!IsServer) return;
+
+        Debug.Log("game manager witnesses a goal");
+
+        hostScore.Value++;
+    }
 }

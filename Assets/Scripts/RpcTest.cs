@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class RpcTest : NetworkBehaviour
 {
-    public Renderer myrenderer;
+    //public Renderer myrenderer;
 
     public override void OnNetworkSpawn()
     {

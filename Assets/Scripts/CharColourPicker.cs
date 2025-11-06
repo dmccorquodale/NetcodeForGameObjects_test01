@@ -5,29 +5,42 @@ public class CharColourPicker : NetworkBehaviour
 {
     public NetworkVariable<Color> DuckColor = new NetworkVariable<Color>(default,
         NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+
     public Renderer myRenderer;
 
     public override void OnNetworkSpawn()
     {
-        DuckColor.OnValueChanged += OnColorChanged;
+        DuckColor.OnValueChanged += OnColourChanged;
 
         if (IsOwner)
         {
-            DuckColor.Value = PickMyColor();
+            SetColour(ClientHostColour());
+            //Debug.Log("ID OnNetworkSpawn() (IsOwner): " + NetworkObjectId);
         }
+
+        //Debug.Log("ID OnNetworkSpawn(): " + NetworkObjectId);
+
+        myRenderer.material.color = DuckColor.Value; // this is to sync all the character instances of late joining clients
     }
 
     public override void OnDestroy()
     {
-        DuckColor.OnValueChanged -= OnColorChanged;
+        DuckColor.OnValueChanged -= OnColourChanged;
     }
 
-    private void OnColorChanged(Color oldValue, Color newValue)
+    private void OnColourChanged(Color oldValue, Color newValue)
     {
+        //Debug.Log("ID OnColourChanged(): " + NetworkObjectId);
         myRenderer.material.color = newValue;
     }
 
-    Color PickMyColor()
+    public void SetColour(Color mycolour)
+    {
+        if (IsOwner)
+            DuckColor.Value = mycolour;
+    }
+
+    Color ClientHostColour()
     {
         Color myColour = Color.green; // Don't think we should ever see a green duck
 

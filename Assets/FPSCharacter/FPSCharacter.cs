@@ -5,6 +5,7 @@ using Unity.Netcode;
 public class FPSCharacter : NetworkBehaviour
 {
     private CharacterController characterController;
+    public CharColourPicker charColourPicker;
 
     InputAction moveAction;
     InputAction lookAction;
@@ -33,9 +34,21 @@ public class FPSCharacter : NetworkBehaviour
 
         characterController = GetComponent<CharacterController>();
 
-        moveAction = InputSystem.actions.FindAction("Player/Move");
+        moveAction = InputSystem.actions.FindAction("Player/Move_keyboard_only");
         lookAction = InputSystem.actions.FindAction("Player/Look");
         jumpAction = InputSystem.actions.FindAction("Player/Jump");
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            playerCamera.enabled = true;
+        }
+        else
+        {
+            playerCamera.enabled = false;
+        }
     }
 
     void Update()
@@ -47,6 +60,50 @@ public class FPSCharacter : NetworkBehaviour
 
         //Debug.Log(NetworkObjectId);
         Move();
+
+        if (jumpAction.WasPressedThisFrame()) { OnJump(); }
+    }
+
+    void OnJump()
+    {
+        Color randomColor = Random.ColorHSV();
+
+        charColourPicker.SetColour(randomColor);
+    }
+
+    void OnControllerColliderHit(ControllerColliderHit hit) // kick soccer ball
+    {
+        if (hit.transform.tag == "Ball")
+        {
+            Rigidbody body = hit.collider.attachedRigidbody;
+
+            if (body != null)
+            {
+                Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
+
+                NetworkObject ballNetObj = body.GetComponent<NetworkObject>();
+
+                if (ballNetObj != null)
+                {
+                    //Debug.Log("ID Attempting to kick the ball: " + NetworkObjectId); // This will only print on the client who hit the ball
+                    KickBallRpc(ballNetObj, pushDir * 5f);
+                }
+            }
+        }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    void KickBallRpc(NetworkObjectReference ballRef, Vector3 force)
+    {
+        if (ballRef.TryGet(out NetworkObject ballObject))
+        {
+            Rigidbody ballRb = ballObject.GetComponent<Rigidbody>();
+            if (ballRb != null)
+            {
+                //Debug.Log("ID Kicking ball: " + NetworkObjectId); // This will only print on the server
+                ballRb.AddForce(force, ForceMode.Impulse);
+            }
+        }
     }
 
     public void Move()

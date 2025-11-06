@@ -17,10 +17,12 @@ namespace HelloWorld
             GUILayout.BeginArea(new Rect(10, 10, 300, 300));
             if (!m_NetworkManager.IsClient && !m_NetworkManager.IsServer)
             {
+                //Debug.Log("StartButtons()");
                 StartButtons();
             }
             else
             {
+                //Debug.Log("StatusLabels()");
                 StatusLabels();
 
                 //SubmitNewPosition();
