@@ -16,11 +16,31 @@ public class Scoreboard : NetworkBehaviour
         //SetScore(); // this is to sync, but it happens too early I guess. 
 
         // so this is jank, should probably be handled with an Rpc call to the server, and it returns the correct score?
+        /*
         if (!IsServer)
         {
             // Wait one frame to make sure NetworkVariable has synced
             StartCoroutine(UpdateScoreNextFrame());
-        }
+        }*/
+        if (IsServer) { return; }
+
+        Debug.Log("Hi I joined late, can I update the score?");
+        RequestSyncScoreForLateJoinerRpc();
+    }
+
+    [Rpc(SendTo.Server)]
+    void RequestSyncScoreForLateJoinerRpc()
+    {
+        //Debug.Log($"Server Received the RPC #{value} on NetworkObject #{sourceNetworkObjectId}");
+        Debug.Log("This is the RequestSyncScoreForLateJoinerRpc() function");
+        SetScoreRpc(GameManager.Instance.hostScore.Value);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void SetScoreRpc(int score)
+    {
+        Debug.Log("This is the SetScoreRpc() function");
+        SetScore(score.ToString());
     }
 
     public override void OnDestroy()
@@ -30,17 +50,20 @@ public class Scoreboard : NetworkBehaviour
 
     void OnScoreChanged(int oldValue, int newValue)
     {
-        SetScore();
+        Debug.Log("This is the OnScoreChanged() function");
+        SetScore(GameManager.Instance.hostScore.Value.ToString());
     }
 
-    void SetScore()
+    void SetScore(string scoreToSet)
     {
-        myText.text = GameManager.Instance.hostScore.Value.ToString();
+        Debug.Log("This is the SetScore() function");
+        myText.text = scoreToSet;
     }
 
+    /*
     private IEnumerator UpdateScoreNextFrame()
     {
         yield return null; // wait one frame
         SetScore();
-    }
+    }*/
 }
