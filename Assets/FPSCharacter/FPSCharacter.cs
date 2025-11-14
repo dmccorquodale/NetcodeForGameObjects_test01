@@ -30,7 +30,7 @@ public class FPSCharacter : NetworkBehaviour
             return;
         }
 
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;
 
         characterController = GetComponent<CharacterController>();
 
