@@ -44,7 +44,7 @@ public class LobbyManager : MonoBehaviour
     void Start()
     {
         // FindLobbyUI after Awake finishes
-        _lobbyUI = FindObjectOfType<LobbyUI>(true); // include inactive objects
+        _lobbyUI = FindFirstObjectByType<LobbyUI>(FindObjectsInactive.Include);
     }
 
     async Task InitializeServicesAsync()
@@ -173,7 +173,7 @@ public class LobbyManager : MonoBehaviour
             if (started)
             {
                 // Hide UI
-                var ui = FindObjectOfType<LobbyUI>(true);
+                var ui = FindFirstObjectByType<LobbyUI>(FindObjectsInactive.Include);
                 ui?.HideLobbyUI();
             }
         }
@@ -220,7 +220,8 @@ public class LobbyManager : MonoBehaviour
             if (started)
             {
                 // Hide UI
-                var ui = FindObjectOfType<LobbyUI>(true);
+                var ui = FindFirstObjectByType<LobbyUI>(FindObjectsInactive.Include);
+                
                 ui?.HideLobbyUI();
             }
         }

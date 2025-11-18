@@ -23,8 +23,8 @@ public class RelayManager : MonoBehaviour
     public async void Awake()
     {
         Debug.Log("Relay Manager Awake");
-        _transport = FindObjectOfType<UnityTransport>();
-        _networkManager = FindObjectOfType<NetworkManager>();
+        _transport = FindAnyObjectByType<UnityTransport>();
+        _networkManager = FindAnyObjectByType<NetworkManager>();
         _buttons.SetActive(false);
 
         await Authenticate();
