@@ -31,6 +31,9 @@ public class LobbyUI : MonoBehaviour
 
         ShowCreatePanel(false);
 
+        lobbyNameInput.text = "test name";
+        maxPlayersInput.text = "2";
+
         // Wait for services to be ready before first refresh
         StartCoroutine(InitialRefreshRoutine());
     }

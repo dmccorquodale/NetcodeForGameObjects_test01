@@ -1,25 +1,8 @@
 using UnityEngine;
-using Unity.Netcode;
 
-public class GameManager : NetworkBehaviour
+public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-
-    //public int hostScore;
-    public int clientScore;
-
-    public NetworkVariable<int> hostScore = new NetworkVariable<int>(default,
-        NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-
-    private void OnEnable()
-    {
-        Goal.GoalScored += GoalScored;
-    }
-
-    private void OnDisable()
-    {
-        Goal.GoalScored -= GoalScored;
-    }
 
     private void Awake()
     {
@@ -32,14 +15,5 @@ public class GameManager : NetworkBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-    }
-
-    void GoalScored()
-    {
-        if (!IsServer) return;
-
-        Debug.Log("game manager witnesses a goal");
-
-        hostScore.Value++;
     }
 }

@@ -9,7 +9,7 @@ public class Scoreboard : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        GameManager.Instance.hostScore.OnValueChanged += OnScoreChanged;
+        SoccerManager.Instance.hostScore.OnValueChanged += OnScoreChanged;
 
         //Debug.Log("current value: " + GameManager.Instance.hostScore.Value.ToString());
         //Debug.Log("Scoreboard spawned, updating my scoreboard");
@@ -33,7 +33,7 @@ public class Scoreboard : NetworkBehaviour
     {
         //Debug.Log($"Server Received the RPC #{value} on NetworkObject #{sourceNetworkObjectId}");
         Debug.Log("This is the RequestSyncScoreForLateJoinerRpc() function");
-        SetScoreRpc(GameManager.Instance.hostScore.Value);
+        SetScoreRpc(SoccerManager.Instance.hostScore.Value);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
@@ -45,13 +45,13 @@ public class Scoreboard : NetworkBehaviour
 
     public override void OnDestroy()
     {
-        GameManager.Instance.hostScore.OnValueChanged -= OnScoreChanged;
+        SoccerManager.Instance.hostScore.OnValueChanged -= OnScoreChanged;
     }
 
     void OnScoreChanged(int oldValue, int newValue)
     {
         Debug.Log("This is the OnScoreChanged() function");
-        SetScore(GameManager.Instance.hostScore.Value.ToString());
+        SetScore(SoccerManager.Instance.hostScore.Value.ToString());
     }
 
     void SetScore(string scoreToSet)
