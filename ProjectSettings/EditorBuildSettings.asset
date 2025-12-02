@@ -26,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 7c6d687590b007945a3ed024c1b72da7
+  - enabled: 1
+    path: Assets/Scenes/HerdTest.unity
+    guid: f14a91ff890f5914f8cb3f1c9663da18
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
