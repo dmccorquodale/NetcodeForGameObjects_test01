@@ -372,10 +372,9 @@ GameObject:
   - component: {fileID: 2765305575727396352}
   - component: {fileID: 1681086523912091748}
   - component: {fileID: 62705496571343779}
-  - component: {fileID: 1465257248922944896}
   m_Layer: 0
   m_Name: FPSCharacter
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -409,7 +408,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1958938970
+  GlobalObjectIdHash: 2743958716
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -543,19 +542,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &1465257248922944896
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5549969076977161003}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5ae4aea2ce5ef74ead279dc3549c141, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NetworkTransformTest
-  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &5653880983431017624
 GameObject:
   m_ObjectHideFlags: 0
