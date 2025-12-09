@@ -6,8 +6,8 @@ using Unity.Netcode;
 public class SheepAgent : NetworkBehaviour
 {
     [Header("Movement")]
-    public float calmSpeed = 0f;     // speed when calm (0 = stand still)
-    public float scaredSpeed = 3f;   // speed when running
+    public float calmSpeed = 0.6f;        // speed when calm & with neighbours
+    public float scaredSpeed = 3f;        // speed when running from player
     public float turnSpeed = 5f;
 
     [Header("Flocking")]
@@ -22,14 +22,19 @@ public class SheepAgent : NetworkBehaviour
     public float fearRadius = 6f;
     public float fleeWeight = 3f;
 
-    [Header("Other")]
-    public float wanderNoise = 0.5f;   // random jitter when scared
-    public float calmDamping = 5f;     // how fast they slow to a stop when calm
+    [Header("Lone wandering")]
+    public float loneWanderSpeed = 0.4f;     // slow speed when alone
+    public float loneWanderJitter = 0.3f;    // how much random steering when alone
+    public float maxLoneWanderRadius = 5f;   // how far from spawn they’re allowed to drift
 
-    // Static list so sheep can find each other quickly
+    [Header("Other")]
+    public float wanderNoise = 0.5f;   // extra jitter when scared
+    public float calmDamping = 5f;     // how quickly they slow down when we want them to stop
+
     private static readonly List<SheepAgent> AllSheep = new();
 
     private Vector3 _velocity;
+    private Vector3 _spawnPoint;
 
     private void OnEnable()
     {
@@ -43,14 +48,13 @@ public class SheepAgent : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        // Only the server simulates flocking. Clients just receive transforms.
         if (!IsServer)
         {
             enabled = false;
             return;
         }
 
-        // Start basically idle
+        _spawnPoint = transform.position;   // remember home position for lone wandering
         _velocity = Vector3.zero;
     }
 
@@ -58,58 +62,82 @@ public class SheepAgent : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        // --- 1) Find neighbors for flocking ---
-        ComputeFlocking(out Vector3 separation, out Vector3 alignment, out Vector3 cohesion);
+        // 1) Flocking info
+        ComputeFlocking(out Vector3 separation, out Vector3 alignment,
+                        out Vector3 cohesion, out bool hasNeighbors);
 
-        // --- 2) Check for nearby players (by tag "Player") ---
+        // 2) Threat (player) info
         bool hasThreat;
         Vector3 flee = ComputeFleeFromPlayers(out hasThreat);
 
         Vector3 steering = Vector3.zero;
+        float maxSpeed = 0f;
 
         if (hasThreat)
         {
-            // When scared: full flock + flee + wander
+            // SCARED: full flocking + flee + wander
             steering += separation * separationWeight;
             steering += alignment * alignmentWeight;
             steering += cohesion * cohesionWeight;
             steering += flee * fleeWeight;
             steering += Random.insideUnitSphere * wanderNoise;
+
+            maxSpeed = scaredSpeed;
         }
         else
         {
-            // When calm: only separation so they don't overlap
+            // CALM behaviour
+
+            // Always avoid overlapping
             steering += separation * separationWeight;
+
+            if (hasNeighbors)
+            {
+                // Calm but in a group: drift toward & with the herd
+                steering += alignment * alignmentWeight;
+                steering += cohesion * cohesionWeight;
+                maxSpeed = calmSpeed;
+            }
+            else
+            {
+                // Calm and ALONE: gentle wandering near spawn point
+                steering += Random.insideUnitSphere * loneWanderJitter;
+
+                // If too far from home, bias back toward spawn
+                Vector3 toHome = _spawnPoint - transform.position;
+                toHome.y = 0;
+                if (toHome.magnitude > maxLoneWanderRadius)
+                {
+                    steering += toHome.normalized;   // a soft pull back
+                }
+
+                maxSpeed = loneWanderSpeed;
+            }
         }
 
         steering.y = 0;
 
-        // --- 3) Update velocity ---
+        // 3) Update velocity
         _velocity += steering * Time.deltaTime;
 
-        float maxSpeed = hasThreat ? scaredSpeed : calmSpeed;
         if (maxSpeed <= 0f)
         {
-            // If calmSpeed is 0, just damp to a stop
             _velocity = Vector3.Lerp(_velocity, Vector3.zero, calmDamping * Time.deltaTime);
         }
-        else
+        else if (_velocity.magnitude > maxSpeed)
         {
-            // Clamp to appropriate max speed
-            if (_velocity.magnitude > maxSpeed)
-                _velocity = _velocity.normalized * maxSpeed;
+            _velocity = _velocity.normalized * maxSpeed;
         }
 
-        // Extra damping when calm so they actually come to rest
-        if (!hasThreat)
+        // Extra damping when we *want* them basically stopped (very small speeds)
+        if (!hasThreat && maxSpeed < 0.01f)
         {
             _velocity = Vector3.Lerp(_velocity, Vector3.zero, calmDamping * Time.deltaTime);
         }
 
-        // --- 4) Move & rotate ---
+        // 4) Move & rotate
         Vector3 newPos = transform.position + _velocity * Time.deltaTime;
-        newPos.y = transform.position.y;      // keep on ground plane
-
+        newPos.y = transform.position.y;
         transform.position = newPos;
 
         if (_velocity.sqrMagnitude > 0.01f)
@@ -119,11 +147,15 @@ public class SheepAgent : NetworkBehaviour
         }
     }
 
-    private void ComputeFlocking(out Vector3 separation, out Vector3 alignment, out Vector3 cohesion)
+    private void ComputeFlocking(out Vector3 separation,
+                                 out Vector3 alignment,
+                                 out Vector3 cohesion,
+                                 out bool hasNeighbors)
     {
         separation = Vector3.zero;
-        alignment = Vector3.zero;
-        cohesion  = Vector3.zero;
+        alignment  = Vector3.zero;
+        cohesion   = Vector3.zero;
+        hasNeighbors = false;
 
         int neighborCount = 0;
 
@@ -137,21 +169,20 @@ public class SheepAgent : NetworkBehaviour
 
             neighborCount++;
 
-            // Separation: push away if too close
+            // Separation
             if (dist < separationRadius && dist > 0.0001f)
             {
-                separation -= toOther / dist; // normalized away
+                separation -= toOther / dist;
             }
 
-            // Alignment: match forward directions
             alignment += other.transform.forward;
-
-            // Cohesion: toward average position
-            cohesion += other.transform.position;
+            cohesion  += other.transform.position;
         }
 
         if (neighborCount > 0)
         {
+            hasNeighbors = true;
+
             alignment /= neighborCount;
             alignment = alignment.normalized;
 
@@ -164,7 +195,6 @@ public class SheepAgent : NetworkBehaviour
     {
         hasThreat = false;
 
-        // Check for *any* collider inside fear radius, then filter by tag
         Collider[] hits = Physics.OverlapSphere(transform.position, fearRadius);
         Collider closest = null;
         float minDistSq = float.MaxValue;
@@ -197,5 +227,9 @@ public class SheepAgent : NetworkBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, fearRadius);
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(_spawnPoint == Vector3.zero ? transform.position : _spawnPoint,
+                              maxLoneWanderRadius);
     }
 }

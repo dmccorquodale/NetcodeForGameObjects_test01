@@ -1746,9 +1746,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SheepSpawner
   ShowTopMostFoldoutHeaderGroup: 1
   sheepPrefab: {fileID: 8357600847957541195, guid: 15d8725f3df60604992fb46fee8a1c14, type: 3}
-  initialCount: 30
-  areaSize: {x: 20, y: 0, z: 20}
-  center: {x: 0, y: 2, z: 0}
+  initialCount: 50
+  areaSize: {x: 200, y: 0, z: 200}
+  center: {x: 109.15, y: 1, z: 0}
 --- !u!1 &1316041193
 GameObject:
   m_ObjectHideFlags: 0
