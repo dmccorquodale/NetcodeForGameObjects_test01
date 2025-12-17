@@ -231,6 +231,17 @@
                     "isPartOfComposite": false
                 },
                 {
+                    "name": "",
+                    "id": "9cda6fc2-fc40-4464-b811-0cae374517b1",
+                    "path": "<Touchscreen>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Touch",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
                     "name": "WASD",
                     "id": "b19c707d-6220-4d1a-af85-13beb7142abe",
                     "path": "Dpad",
