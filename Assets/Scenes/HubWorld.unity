@@ -518,9 +518,92 @@ Transform:
   - {fileID: 12361788}
   - {fileID: 1733500453}
   - {fileID: 966090945}
+  - {fileID: 217143534}
   - {fileID: 463272156}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &217143533
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 203715019}
+    m_Modifications:
+    - target: {fileID: 1050272391634265680, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: m_Text
+      value: Mountain Pass
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230223469233007734, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -14.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230223469233007734, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.7500062
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230223469233007734, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 11.77
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230223469233007734, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.38486636
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230223469233007734, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230223469233007734, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.9229724
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230223469233007734, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230223469233007734, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230223469233007734, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -134.729
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230223469233007734, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996428283025272199, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1748128141
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996428283025272199, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996428283025272199, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4116694350
+      objectReference: {fileID: 0}
+    - target: {fileID: 8033955761300721238, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: levelToLoad
+      value: SheepMountain01
+      objectReference: {fileID: 0}
+    - target: {fileID: 8514398407291262112, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+      propertyPath: m_Name
+      value: LevelPortal (3)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+--- !u!4 &217143534 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5230223469233007734, guid: 67832cb8b27f08f4ea1919d963912334, type: 3}
+  m_PrefabInstance: {fileID: 217143533}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &463272155
 PrefabInstance:
   m_ObjectHideFlags: 0
